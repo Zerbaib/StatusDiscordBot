@@ -14,14 +14,9 @@ async def on_ready():
 async def update_servers_status():
     await bot.wait_until_ready()
 
-    server_channel_id = 1234567890  # ID du canal où vous souhaitez envoyer l'embed
-    server_channel = bot.get_channel(server_channel_id)
+    server_channel = bot.get_channel(config.CHAN_ID)
 
-    servers = [
-        {'name': 'Serveur 1', 'ip': '127.0.0.1'},
-        {'name': 'Serveur 2', 'ip': '192.168.0.1'},
-        {'name': 'Serveur 3', 'ip': 'example.com'},
-    ]
+    servers = config.servers
 
     embed_message = None
 
