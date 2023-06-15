@@ -103,7 +103,7 @@ async def update_servers_status():
 
         save_servers()  # Sauvegarder la configuration des serveurs
 
-        await asyncio.sleep(60)
+        await asyncio.sleep(config.sec_loop)
 
 bot.loop.create_task(update_servers_status())
 bot.run(config.TOKEN)
