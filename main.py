@@ -7,12 +7,8 @@ import config
 
 bot = commands.Bot(command_prefix='!', intents=disnake.Intents.all())
 
-servers = []  # Variable globale pour stocker les informations des serveurs
-
 @bot.event
 async def on_ready():
-    global servers  # Déclarer la variable 'servers' en tant que variable globale
-
     # Load the configuration from the JSON file
     with open('servers.json', 'r') as servers_file:
         servers = json.load(servers_file)
@@ -49,7 +45,6 @@ async def update_servers_status():
     embed_message = None
     
     while not bot.is_closed():
-        # Load the configuration from the JSON file
         with open('servers.json', 'r') as servers_file:
             servers = json.load(servers_file)
         
@@ -69,9 +64,10 @@ async def update_servers_status():
             if status == "Offline":
                 status = "<:off:1118875858841649183> ``Offline``"
             
-            server['status'] = status  # Update server status in the configuration
+            # Mettre à jour le statut du serveur dans la configuration
+            server['status'] = status
             
-            # Calculate status duration
+            # Mettre à jour la durée du statut
             if 'last_status_change' not in server:
                 server['last_status_change'] = asyncio.get_event_loop().time()
             current_time = asyncio.get_event_loop().time()
