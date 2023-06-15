@@ -99,6 +99,6 @@ async def maintenance(ctx: disnake.ApplicationCommandInteraction, server: str):
     else:
         await ctx.author.send(f"Server {server} not found.")
     
-    await ctx.send("done", delete_after=10)
+    await ctx.send("done", delete_after=config.del_time)
 
 bot.run(config.TOKEN)
