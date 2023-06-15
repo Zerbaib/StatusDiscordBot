@@ -63,7 +63,7 @@ async def ping_server(ip):
 
 @bot.slash_command(
     name="maintenance",
-    description="Active ou désactive la maintenance pour un serveur"
+    description="Active/désactive la maintenance"
 )
 async def maintenance(ctx: disnake.ApplicationCommandInteraction, serveur: str):
     if ctx.author.id != config.YOUR_ID:
