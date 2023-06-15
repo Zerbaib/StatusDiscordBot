@@ -12,7 +12,16 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 
 @bot.event
 async def on_ready():
-    print(f'Logged in as {bot.user.name}')
+    await bot.change_presence(
+        servers = 0
+        for servers in config.servers:
+            servers += 1
+        activity=disnake.Activity(
+            type=disnake.ActivityType.watching,
+            name=f'{servers} servers'
+        )
+    )
+    print(f'Logged in as {bot.user.name} ✅')
 
 @bot.event
 async def update_servers_status():
