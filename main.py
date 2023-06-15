@@ -55,9 +55,10 @@ async def maintenance(ctx: disnake.ApplicationCommandInteraction, server: str):
     if server:
         server['maintenance'] = not server['maintenance']
         save_servers()  # Save server configuration
-        await ctx.send(f"The server {server['name']} is now in maintenance mode: {server['maintenance']}")
+        await ctx.author.send(f"The server {server['name']} is now in maintenance mode: {server['maintenance']}")
     else:
-        await ctx.send("Server not found")
+        await ctx.author.send("Server not found")
+
 
 async def update_servers_status():
     await bot.wait_until_ready()
