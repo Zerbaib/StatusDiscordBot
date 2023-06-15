@@ -21,15 +21,20 @@ async def update_servers_status():
     embed_message = None
 
     while not bot.is_closed():
-        embed = disnake.Embed(title='État des serveurs')
+        embed = disnake.Embed(title='Status of servers')
 
         for server in servers:
             name = server['name']
             ip = server['ip']
             status = await ping_server(ip)
 
-            embed.add_field(name=name, value=status, inline=False)
+            if status == "Online":
+                status = "<:on:1118875860854915152> ``Online``"
+            if status == "Offline":
+                status = "<:off:1118875858841649183> ``Offine``"
 
+            embed.add_field(name=name, value=status, inline=False)
+            embed.add_field(name="legend", value="If is <:on:1118875860854915152> Is online !\nIf is <:idle:1118875857512038560> the server have bugs\nIf is <:off:1118875858841649183> The server is offline", inline=False)
         if embed_message:
             await embed_message.edit(embed=embed)
         else:
