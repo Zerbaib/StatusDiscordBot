@@ -52,7 +52,7 @@ async def update_servers_status():
         for server in servers:
             name = server['name']
             ip = server['ip']
-            maintenance = server.get('maintenance', False)
+            maintenance = server.get('maintenance')
             
             if maintenance:
                 status = '<:idle:1118875857512038560> ``Idle``'
