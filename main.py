@@ -22,9 +22,9 @@ async def on_ready():
     )
     print(f'Logged in as {bot.user.name}')
 
-def save_servers():
+def save_servers(servers):
     with open('servers.json', 'w') as servers_file:
-        json.dump(servers, servers_file, indent=4)
+        json.dump(servers, servers_file, indent=4, ensure_ascii=False)
 
 async def ping_server(ip):
     try:
@@ -59,17 +59,12 @@ async def update_servers_status():
             else:
                 status = await ping_server(ip)
             
-            if 'status' not in server:
-                server['status'] = status
+            if status == "Online":
+                status = "<:on:1118875860854915152> ``Online``"
+            if status == "Offline":
+                status = "<:off:1118875858841649183> ``Offline``"
             
-            # Calculate status duration
-            if 'last_status_change' not in server:
-                server['last_status_change'] = asyncio.get_event_loop().time()
-            current_time = asyncio.get_event_loop().time()
-            elapsed_time = current_time - server['last_status_change']
-            server['last_status_change'] = current_time
-            
-            embed.add_field(name=name, value=f'{status}\n*(For {elapsed_time:.2f} seconds)*', inline=False)
+            embed.add_field(name=name, value=f'{status}', inline=False)
 
         if embed_message:
             embed.add_field(name="legend", value="If is <:on:1118875860854915152> Is online!\nIf is <:idle:1118875857512038560> the server has bugs\nIf is <:off:1118875858841649183> The server is offline", inline=False)
@@ -77,7 +72,7 @@ async def update_servers_status():
         else:
             embed_message = await server_channel.send(embed=embed)
 
-        save_servers()  # Save server configuration
+        save_servers(servers)  # Save server configuration
 
         await asyncio.sleep(config.sec_loop)
 
@@ -99,7 +94,7 @@ async def maintenance(ctx: disnake.ApplicationCommandInteraction, server: str):
 
     if server:
         server['maintenance'] = not server.get('maintenance', False)
-        save_servers()
+        save_servers(servers)
         await ctx.send(f"Maintenance mode for {server['name']} has been {'enabled' if server['maintenance'] else 'disabled'}.")
     else:
         await ctx.send(f"Server {server} not found.")
