@@ -59,8 +59,10 @@ async def update_servers_status():
             else:
                 status = await ping_server(ip)
             
-            if 'status' not in server:
-                server['status'] = status
+            if status == "Online":
+                status = "<:on:1118875860854915152> ``Online``"
+            if status == "Offline":
+                status = "<:off:1118875858841649183> ``Offline``"
             
             # Calculate status duration
             if 'last_status_change' not in server:
