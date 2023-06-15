@@ -2,32 +2,56 @@ import disnake
 from disnake.ext import commands
 import asyncio
 import subprocess
-import json
 import config
-
-bot = commands.Bot(command_prefix='!', intents=disnake.Intents.all())
-
+import datetime
+import json
+bot = commands.Bot(command_prefix='!')
 @bot.event
 async def on_ready():
-    # Load the configuration from the JSON file
-    with open('servers.json', 'r') as servers_file:
-        servers = json.load(servers_file)
-
-    servers_count = len(servers)
-    await bot.change_presence(
-        activity=disnake.Activity(
-            type=disnake.ActivityType.watching,
-            name=f'{servers_count} servers'
-        )
-    )
     print(f'Logged in as {bot.user.name}')
+@bot.event
+async def update_servers_status():
+    await bot.wait_until_ready()
+    server_channel = bot.get_channel(config.CHAN_ID)
+    embed_message = None
+    while not bot.is_closed():
+        servers = config.servers
+        embed = disnake.Embed(title='Status of servers')
+        for server in servers:
+            name = server['name']
+            ip = server['ip']
+            maintenance = server['maintenance']
+            last_updated = server.get('last_updated', None)
+            
+            if maintenance:
+                status = '<:idle:1118875857512038560> Idle'
+            else:
+                status = await ping_server(ip)
+            if status == "Online":
+                status = "<:on:1118875860854915152> ``Online``"
+            if status == "Offline":
+                status = "<:off:1118875858841649183> ``Offine``"
+            embed.add_field(name=name, value=status, inline=False)
+            if last_updated:
+                time_delta = datetime.datetime.now() - last_updated
+                embed.add_field(name="Time Since Last Update", value=str(time_delta))
+            if status != server['status'] or maintenance != server['maintenance']:
+                server['status'] = status
+                server['maintenance'] = maintenance
+                server['last_updated'] = datetime.datetime.now()
+                save_config()
+        if embed_message:
+            embed.add_field(name="legend", value="If is <:on:1118875860854915152> Is online !\nIf is <:idle:1118875857512038560> the server have bugs\nIf is <:off:1118875858841649183> The server is offline", inline=False)
+            await embed_message.edit(embed=embed)
+        else:
+            embed_message = await server_channel.send(embed=embed)
 
-def save_servers(servers):
-    with open('servers.json', 'w') as servers_file:
-        json.dump(servers, servers_file, indent=4)
+        await asyncio.sleep(60)
+        await asyncio.sleep(config.sec_loop)
 
 async def ping_server(ip):
     try:
+        # Execute a ping command
         result = await asyncio.create_subprocess_shell(
             f'ping -c 1 {ip}', stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
@@ -37,76 +61,25 @@ async def ping_server(ip):
         else:
             return 'Offline'
     except Exception:
-        return 'Erreur lors du ping'
-
-async def update_servers_status():
-    await bot.wait_until_ready()
-    server_channel = bot.get_channel(config.CHAN_ID)
-    embed_message = None
-    
-    while not bot.is_closed():
-        with open('servers.json', 'r') as servers_file:
-            servers = json.load(servers_file)
-        
-        embed = disnake.Embed(title='Status of servers')
-        for server in servers:
-            name = server['name']
-            ip = server['ip']
-            maintenance = server['maintenance']
-            
-            if maintenance:
-                status = '<:idle:1118875857512038560> ``Idle``'
-            else:
-                status = await ping_server(ip)
-            
-            if status == "Online":
-                status = "<:on:1118875860854915152> ``Online``"
-            if status == "Offline":
-                status = "<:off:1118875858841649183> ``Offline``"
-            
-            # Mettre à jour le statut du serveur dans la configuration
-            server['status'] = status
-            
-            # Mettre à jour la durée du statut
-            if 'last_status_change' not in server:
-                server['last_status_change'] = asyncio.get_event_loop().time()
-            current_time = asyncio.get_event_loop().time()
-            elapsed_time = current_time - server['last_status_change']
-            server['last_status_change'] = current_time
-            
-            embed.add_field(name=name, value=f'{status}\n*(For {elapsed_time:.2f} seconds)*', inline=False)
-
-        if embed_message:
-            embed.add_field(name="legend", value="If is <:on:1118875860854915152> Is online!\nIf is <:idle:1118875857512038560> the server has bugs\nIf is <:off:1118875858841649183> The server is offline", inline=False)
-            await embed_message.edit(embed=embed)
-        else:
-            embed_message = await server_channel.send(embed=embed)
-
-        save_servers(servers)  # Save server configuration
-
-        await asyncio.sleep(config.sec_loop)
-
-bot.loop.create_task(update_servers_status())
-
+        return 'Error while pinging'
+def save_config():
+    with open('config.py', 'w') as config_file:
+        json.dump(config.servers, config_file)
 @bot.slash_command(
     name="maintenance",
-    description="Enable or disable maintenance mode for a server"
+    description="Activate or deactivate maintenance mode for a server"
 )
-async def maintenance(ctx: disnake.ApplicationCommandInteraction, server: str):
+async def maintenance(ctx: disnake.ApplicationCommandInteraction, serveur: str):
     if ctx.author.id != config.YOUR_ID:
         await ctx.send("You are not authorized to execute this command.")
         return
-
-    with open('servers.json', 'r') as servers_file:
-        servers = json.load(servers_file)
-
-    server = next((s for s in servers if s['name'].lower() == server.lower()), None)
-
+    server = next((s for s in config.servers if s['name'].lower() == serveur.lower()), None)
     if server:
         server['maintenance'] = not server['maintenance']
-        save_servers(servers)  # Save server configuration
-        await ctx.author.send(f"The server {server['name']} is now in maintenance mode: {server['maintenance']}")
+        server['last_updated'] = datetime.datetime.now()
+        save_config()
+        await ctx.send(f"The server {server['name']} is now in maintenance: {server['maintenance']}")
     else:
-        await ctx.author.send("Server not found")
-
+        await ctx.send("Server not found")
+bot.loop.create_task(update_servers_status())
 bot.run(config.TOKEN)
