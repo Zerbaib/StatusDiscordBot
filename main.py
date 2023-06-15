@@ -5,7 +5,7 @@ import subprocess
 import json
 import config
 
-# Charger la configuration depuis le fichier JSON
+# Load the configuration from the JSON file
 with open('servers.json', 'r') as servers_file:
     servers = json.load(servers_file)
 
@@ -28,7 +28,7 @@ def save_servers():
 
 async def ping_server(ip):
     try:
-        # Exécute une commande ping
+        # Execute a ping command
         result = await asyncio.create_subprocess_shell(
             f'ping -c 1 {ip}', stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
@@ -39,25 +39,25 @@ async def ping_server(ip):
         else:
             return 'Offline'
     except Exception:
-        return 'Erreur lors du ping'
+        return 'Error during ping'
 
 @bot.slash_command(
     name="maintenance",
-    description="Active ou désactive la maintenance pour un serveur"
+    description="Enable or disable maintenance mode for a server"
 )
-async def maintenance(ctx: disnake.ApplicationCommandInteraction, serveur: str):
+async def maintenance(ctx: disnake.ApplicationCommandInteraction, server: str):
     if ctx.author.id != config.YOUR_ID:
-        await ctx.send("Vous n'êtes pas autorisé à exécuter cette commande.")
+        await ctx.send("You are not authorized to execute this command.")
         return
 
-    server = next((s for s in servers if s['name'].lower() == serveur.lower()), None)
+    server = next((s for s in servers if s['name'].lower() == server.lower()), None)
 
     if server:
         server['maintenance'] = not server['maintenance']
-        save_servers()  # Sauvegarder la configuration des serveurs
-        await ctx.send(f"Le serveur {server['name']} est maintenant en maintenance : {server['maintenance']}")
+        save_servers()  # Save server configuration
+        await ctx.send(f"The server {server['name']} is now in maintenance mode: {server['maintenance']}")
     else:
-        await ctx.send("Serveur introuvable")
+        await ctx.send("Server not found")
 
 async def update_servers_status():
     await bot.wait_until_ready()
@@ -83,9 +83,9 @@ async def update_servers_status():
             if status == "Offline":
                 status = "<:off:1118875858841649183> ``Offline``"
 
-            server['status'] = status  # Mettre à jour l'état du serveur dans la configuration
+            server['status'] = status  # Update server status in the configuration
 
-            # Calculer la durée d'état
+            # Calculate status duration
             if 'last_status_change' not in server:
                 server['last_status_change'] = asyncio.get_event_loop().time()
 
@@ -93,15 +93,15 @@ async def update_servers_status():
             elapsed_time = current_time - server['last_status_change']
             server['last_status_change'] = current_time
 
-            embed.add_field(name=name, value=f'{status}\n*(Depuis {elapsed_time:.2f} secondes)*', inline=False)
+            embed.add_field(name=name, value=f'{status}\n*(For {elapsed_time:.2f} seconds)*', inline=False)
 
         if embed_message:
-            embed.add_field(name="legend", value="If is <:on:1118875860854915152> Is online !\nIf is <:idle:1118875857512038560> the server have bugs\nIf is <:off:1118875858841649183> The server is offline", inline=False)
+            embed.add_field(name="legend", value="If is <:on:1118875860854915152> Is online!\nIf is <:idle:1118875857512038560> the server has bugs\nIf is <:off:1118875858841649183> The server is offline", inline=False)
             await embed_message.edit(embed=embed)
         else:
             embed_message = await server_channel.send(embed=embed)
 
-        save_servers()  # Sauvegarder la configuration des serveurs
+        save_servers()  # Save server configuration
 
         await asyncio.sleep(config.sec_loop)
 
