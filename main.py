@@ -43,7 +43,7 @@ async def update_servers_status():
             embed.add_field(name=name, value=status, inline=False)
 
         if embed_message:
-            embed.add_field(name="legend", value="If is <:on:1118875860854915152> Is online !\nIf is <:idle:1118875857512038560> the server have bugs\nIf is <:off:1118875858841649183> The server is offline", inline=False)
+            embed.add_field(name="legend", value="If is <:on:1118875860854915152> Is online !\nIf is <:idle:1118875857512038560> is in maintenance\nIf is <:off:1118875858841649183> is offline", inline=False)
             await embed_message.edit(embed=embed)
         else:
             embed_message = await server_channel.send(embed=embed)
