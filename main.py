@@ -12,16 +12,15 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 
 @bot.event
 async def on_ready():
-    servers = 0
-    for servers in config.servers:
-        servers += 1
+    total_servers = len(config.servers)  # Utiliser len() pour compter le nombre total de serveurs
     await bot.change_presence(
         activity=disnake.Activity(
             type=disnake.ActivityType.watching,
-            name=f'{servers} servers'
+            name=f'{total_servers} servers'
         )
     )
     print(f'Logged in as {bot.user.name} ✅')
+
 
 @bot.event
 async def update_servers_status():
