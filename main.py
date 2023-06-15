@@ -28,7 +28,7 @@ async def update_servers_status():
             ip = server['ip']
             status = await ping_server(ip)
 
-            embed.add_field(name=name, value=status, inline=True)
+            embed.add_field(name=name, value=status, inline=False)
 
         if embed_message:
             await embed_message.edit(embed=embed)
