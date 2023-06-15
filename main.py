@@ -22,9 +22,9 @@ async def on_ready():
     )
     print(f'Logged in as {bot.user.name}')
 
-def save_servers():
+def save_servers(servers):
     with open('servers.json', 'w') as servers_file:
-        json.dump(servers, servers_file, indent=4)
+        json.dump(servers, servers_file, indent=4, ensure_ascii=False)
 
 async def ping_server(ip):
     try:
@@ -72,7 +72,7 @@ async def update_servers_status():
         else:
             embed_message = await server_channel.send(embed=embed)
 
-        save_servers()  # Save server configuration
+        save_servers(servers)  # Save server configuration
 
         await asyncio.sleep(config.sec_loop)
 
@@ -94,7 +94,7 @@ async def maintenance(ctx: disnake.ApplicationCommandInteraction, server: str):
 
     if server:
         server['maintenance'] = not server.get('maintenance', False)
-        save_servers()
+        save_servers(servers)
         await ctx.send(f"Maintenance mode for {server['name']} has been {'enabled' if server['maintenance'] else 'disabled'}.")
     else:
         await ctx.send(f"Server {server} not found.")
