@@ -6,3 +6,4 @@ servers = [
         {'name': 'Serveur 2', 'ip': '192.168.0.1', 'maintenance': False},
         {'name': 'Serveur 3', 'ip': 'example.com', 'maintenance': False},
 ]
+sec_loop = 60
