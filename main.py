@@ -75,7 +75,7 @@ async def ping_server(ip):
 
 @bot.slash_command(
     name="maintenance",
-    description="Active/désactive la maintenance"
+    description="Active ou désactive la maintenance pour un serveur"
 )
 async def maintenance(ctx: disnake.ApplicationCommandInteraction, serveur: str):
     if ctx.author.id != config.YOUR_ID:
@@ -86,9 +86,10 @@ async def maintenance(ctx: disnake.ApplicationCommandInteraction, serveur: str):
 
     if server:
         server['maintenance'] = not server['maintenance']
-        await ctx.send(f"Le serveur {server['name']} est maintenant en maintenance : {server['maintenance']}")
+        await ctx.author.send(f"Le serveur {server['name']} est maintenant en maintenance : {server['maintenance']}")
     else:
-        await ctx.send("Serveur introuvable")
+        await ctx.author.send("Serveur introuvable")
+
 
 bot.loop.create_task(update_servers_status())
 bot.run(config.TOKEN)
