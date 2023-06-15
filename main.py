@@ -9,7 +9,7 @@ import config
 with open('servers.json', 'r') as servers_file:
     servers = json.load(servers_file)
 
-bot = commands.Bot(command_prefix='!')
+bot = commands.Bot(command_prefix='!', intents=disnake.Intents.all())
 
 @bot.event
 async def on_ready():
