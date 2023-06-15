@@ -3,8 +3,6 @@ from disnake.ext import commands
 import asyncio
 import subprocess
 import config
-import datetime
-import json
 
 intents = disnake.Intents.default()
 intents.message_content = True
