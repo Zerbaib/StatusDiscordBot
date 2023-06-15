@@ -16,11 +16,10 @@ async def update_servers_status():
 
     server_channel = bot.get_channel(config.CHAN_ID)
 
-    servers = config.servers
-
     embed_message = None
 
     while not bot.is_closed():
+        servers = config.servers
         embed = disnake.Embed(title='Status of servers')
 
         for server in servers:
