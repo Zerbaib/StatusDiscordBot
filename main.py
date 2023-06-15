@@ -64,14 +64,7 @@ async def update_servers_status():
             if status == "Offline":
                 status = "<:off:1118875858841649183> ``Offline``"
             
-            # Calculate status duration
-            if 'last_status_change' not in server:
-                server['last_status_change'] = asyncio.get_event_loop().time()
-            current_time = asyncio.get_event_loop().time()
-            elapsed_time = current_time - server['last_status_change']
-            server['last_status_change'] = current_time
-            
-            embed.add_field(name=name, value=f'{status}\n*(For {elapsed_time:.2f} seconds)*', inline=False)
+            embed.add_field(name=name, value=f'{status}', inline=False)
 
         if embed_message:
             embed.add_field(name="legend", value="If is <:on:1118875860854915152> Is online!\nIf is <:idle:1118875857512038560> the server has bugs\nIf is <:off:1118875858841649183> The server is offline", inline=False)
