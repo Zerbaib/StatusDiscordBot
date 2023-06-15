@@ -22,7 +22,7 @@ async def on_ready():
     )
     print(f'Logged in as {bot.user.name}')
 
-def save_servers():
+def save_servers(servers):
     with open('servers.json', 'w') as servers_file:
         json.dump(servers, servers_file, indent=4)
 
@@ -82,7 +82,7 @@ async def update_servers_status():
         else:
             embed_message = await server_channel.send(embed=embed)
 
-        save_servers()  # Save server configuration
+        save_servers(servers)  # Save server configuration
 
         await asyncio.sleep(config.sec_loop)
 
@@ -97,11 +97,14 @@ async def maintenance(ctx: disnake.ApplicationCommandInteraction, server: str):
         await ctx.send("You are not authorized to execute this command.")
         return
 
+    with open('servers.json', 'r') as servers_file:
+        servers = json.load(servers_file)
+
     server = next((s for s in servers if s['name'].lower() == server.lower()), None)
 
     if server:
         server['maintenance'] = not server['maintenance']
-        save_servers()  # Save server configuration
+        save_servers(servers)  # Save server configuration
         await ctx.author.send(f"The server {server['name']} is now in maintenance mode: {server['maintenance']}")
     else:
         await ctx.author.send("Server not found")
