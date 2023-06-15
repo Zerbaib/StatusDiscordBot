@@ -12,10 +12,10 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 
 @bot.event
 async def on_ready():
+    servers = 0
+    for servers in config.servers:
+        servers += 1
     await bot.change_presence(
-        servers = 0
-        for servers in config.servers:
-            servers += 1
         activity=disnake.Activity(
             type=disnake.ActivityType.watching,
             name=f'{servers} servers'
