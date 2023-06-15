@@ -57,7 +57,7 @@ async def update_servers_status():
         else:
             embed_message = await server_channel.send(embed=embed)
 
-        await asyncio.sleep(60)
+        await asyncio.sleep(config.sec_loop)
 
 async def ping_server(ip):
     try:
