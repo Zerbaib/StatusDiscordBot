@@ -15,7 +15,6 @@ async def update_servers_status():
     await bot.wait_until_ready()
 
     server_channel = bot.get_channel(config.CHAN_ID)
-
     embed_message = None
 
     while not bot.is_closed():
@@ -25,7 +24,12 @@ async def update_servers_status():
         for server in servers:
             name = server['name']
             ip = server['ip']
-            status = await ping_server(ip)
+            maintenance = server['maintenance']
+            
+            if maintenance:
+                status = '<:idle:1118875857512038560> Idle'
+            else:
+                status = await ping_server(ip)
 
             if status == "Online":
                 status = "<:on:1118875860854915152> ``Online``"
@@ -56,6 +60,17 @@ async def ping_server(ip):
             return 'Offline'
     except Exception:
         return 'Erreur lors du ping'
+
+@bot.slash_command()
+async def maintenance(ctx: disnake.ApplicationCommandInteraction, serveur: str):
+    """Active ou désactive la maintenance pour un serveur"""
+    server = next((s for s in config.servers if s['name'].lower() == serveur.lower()), None)
+
+    if server:
+        server['maintenance'] = not server['maintenance']
+        await ctx.send(f"Le serveur {server['name']} est maintenant en maintenance : {server['maintenance']}")
+    else:
+        await ctx.send("Serveur introuvable")
 
 bot.loop.create_task(update_servers_status())
 bot.run(config.TOKEN)
