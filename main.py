@@ -31,7 +31,7 @@ async def update_servers_status():
             maintenance = server['maintenance']
             
             if maintenance:
-                status = '<:idle:1118875857512038560> Idle'
+                status = '<:idle:1118875857512038560> ``Idle``'
             else:
                 status = await ping_server(ip)
 
