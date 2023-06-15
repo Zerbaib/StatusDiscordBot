@@ -7,8 +7,12 @@ import config
 
 bot = commands.Bot(command_prefix='!', intents=disnake.Intents.all())
 
+servers = []  # Variable globale pour stocker les informations des serveurs
+
 @bot.event
 async def on_ready():
+    global servers  # Déclarer la variable 'servers' en tant que variable globale
+
     # Load the configuration from the JSON file
     with open('servers.json', 'r') as servers_file:
         servers = json.load(servers_file)
@@ -45,9 +49,6 @@ async def update_servers_status():
     embed_message = None
     
     while not bot.is_closed():
-        with open('servers.json', 'r') as servers_file:
-            servers = json.load(servers_file)
-        
         embed = disnake.Embed(title='Status of servers')
         for server in servers:
             name = server['name']
