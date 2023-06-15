@@ -3,7 +3,6 @@ from disnake.ext import commands
 import asyncio
 import subprocess
 import json
-import aioping
 import config
 
 # Load the configuration from the JSON file
@@ -29,10 +28,18 @@ def save_servers():
 
 async def ping_server(ip):
     try:
-        await aioping.ping(ip)
-        return 'Online'
+        result = await asyncio.create_subprocess_shell(
+            f'ping -c 1 {ip}', stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )
+        await result.communicate()
+
+        if result.returncode == 0:
+            return 'Online'
+        else:
+            return 'Offline'
     except Exception:
-        return 'Offline'
+        return 'Erreur lors du ping'
+
 
 
 @bot.slash_command(
@@ -97,6 +104,8 @@ async def update_servers_status():
             embed_message = await server_channel.send(embed=embed)
 
         save_servers()  # Save server configuration
+        with open('servers.json', 'r') as servers_file:
+            servers = json.load(servers_file)
 
         await asyncio.sleep(config.sec_loop)
 
