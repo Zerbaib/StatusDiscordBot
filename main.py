@@ -61,9 +61,12 @@ async def ping_server(ip):
     except Exception:
         return 'Erreur lors du ping'
 
-@bot.slash_command()
+@bot.slash_command(name="maintenance", description="Active ou désactive la maintenance pour un serveur")
 async def maintenance(ctx: disnake.ApplicationCommandInteraction, serveur: str):
-    """Active ou désactive la maintenance pour un serveur"""
+    if ctx.author.id != config.YOUR_ID:
+        await ctx.send("Vous n'êtes pas autorisé à exécuter cette commande.")
+        return
+
     server = next((s for s in config.servers if s['name'].lower() == serveur.lower()), None)
 
     if server:
