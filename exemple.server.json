@@ -1,0 +1,24 @@
+[
+    {
+      "name": "Server 1",
+      "ip": "192.168.0.1",
+      "maintenance": false,
+      "status": "<:on:1118875860854915152> Online",
+      "last_status_change": 0
+    },
+    {
+      "name": "Server 2",
+      "ip": "192.168.0.2",
+      "maintenance": true,
+      "status": "<:idle:1118875857512038560> Idle",
+      "last_status_change": 0
+    },
+    {
+      "name": "Server 3",
+      "ip": "192.168.0.3",
+      "maintenance": false,
+      "status": "<:off:1118875858841649183> Offline",
+      "last_status_change": 0
+    }
+]
+  
