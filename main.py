@@ -2,6 +2,7 @@ import disnake
 from disnake.ext import commands
 import asyncio
 import subprocess
+import config
 
 bot = commands.Bot(command_prefix='!')
 
@@ -57,4 +58,4 @@ async def ping_server(ip):
         return 'Erreur lors du ping'
 
 bot.loop.create_task(update_servers_status())
-bot.run('YOUR_BOT_TOKEN')
+bot.run(config.TOKEN)
