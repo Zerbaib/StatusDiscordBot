@@ -5,10 +5,6 @@ import subprocess
 import json
 import config
 
-# Load the configuration from the JSON file
-with open('servers.json', 'r') as servers_file:
-    servers = json.load(servers_file)
-
 bot = commands.Bot(command_prefix='!', intents=disnake.Intents.all())
 
 @bot.event
@@ -40,8 +36,6 @@ async def ping_server(ip):
     except Exception:
         return 'Erreur lors du ping'
 
-
-
 @bot.slash_command(
     name="maintenance",
     description="Enable or disable maintenance mode for a server"
@@ -68,6 +62,9 @@ async def update_servers_status():
     embed_message = None
 
     while not bot.is_closed():
+        with open('servers.json', 'r') as servers_file:
+            servers = json.load(servers_file)
+
         embed = disnake.Embed(title='Status of servers')
 
         for server in servers:
@@ -104,8 +101,6 @@ async def update_servers_status():
             embed_message = await server_channel.send(embed=embed)
 
         save_servers()  # Save server configuration
-        with open('servers.json', 'r') as servers_file:
-            servers = json.load(servers_file)
 
         await asyncio.sleep(config.sec_loop)
 
