@@ -98,5 +98,7 @@ async def maintenance(ctx: disnake.ApplicationCommandInteraction, server: str):
         await ctx.author.send(f"Maintenance mode for {server['name']} has been {'enabled' if server['maintenance'] else 'disabled'}.")
     else:
         await ctx.author.send(f"Server {server} not found.")
+    
+    await ctx.send("done", delete_after=10)
 
 bot.run(config.TOKEN)
