@@ -62,21 +62,20 @@ async def update_servers_status():
             name = server['name']
             ip = server['ip']
             maintenance = server.get('maintenance')
-            
+
             if maintenance:
                 status = '<:idle:1118875857512038560> ``Idle``'
             else:
                 status = await ping_server(ip)
-                ping_result = await ping_server(ip)
-                if ping_result.startswith("Error"):
-                    status = "<:error:YOUR_ERROR_EMOJI_ID> ``Error``"
+                if status == "Online":
+                    status = "<:on:1118875860854915152> ``Online``"
+                    ping_result = await ping_server(ip)
+                    if ping_result.startswith("Erreur"):
+                        status = "<:error:YOUR_ERROR_EMOJI_ID> ``Error``"
                 else:
-                    if status == "Online":
-                        status = "<:on:1118875860854915152> ``Online``"
-                    else:
-                         status = "<:off:1118875858841649183> ``Offline``"
+                    status = "<:off:1118875858841649183> ``Offline``"
             
-            embed.add_field(name=name, value=f'{status} With {ping_result}', inline=False)
+            embed.add_field(name=name, value=f'{status} With ``{ping_result}``', inline=False)
 
         if embed_message:
             embed.add_field(name="legend", value="If is <:on:1118875860854915152> Is online!\nIf is <:idle:1118875857512038560> the server has bugs\nIf is <:off:1118875858841649183> The server is offline", inline=False)
