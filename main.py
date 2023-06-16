@@ -62,15 +62,15 @@ async def update_servers_status():
             name = server['name']
             ip = server['ip']
             maintenance = server.get('maintenance')
-            ping_result = ""
+            ping_result = ""  # Déplacer l'initialisation ici
 
             if maintenance:
-                status = '<:idle:1118875857512038560> ``Idle``'  
+                status = '<:idle:1118875857512038560> ``Idle``'
             else:
                 status = await ping_server(ip)
                 if status == "Online":
                     status = "<:on:1118875860854915152> ``Online``"
-                    ping_result = await ping_server(ip)
+                    ping_result = await ping_server(ip)  # Assigner la valeur ici
                     if ping_result.startswith("Erreur"):
                         status = "<:error:YOUR_ERROR_EMOJI_ID> ``Error``"
                 else:
@@ -87,6 +87,7 @@ async def update_servers_status():
         save_servers(servers)  # Save server configuration
 
         await asyncio.sleep(config.sec_loop)
+
 
 
 bot.loop.create_task(update_servers_status())
