@@ -34,19 +34,17 @@ async def ping_server(ip):
         output, _ = await result.communicate()
         output = output.decode('utf-8')
         if result.returncode == 0:
-            # Extraire le temps de ping de la sortie
             start_index = output.find('time=')
             if start_index != -1:
                 end_index = output.find(' ms', start_index)
                 if end_index != -1:
                     ping_time = output[start_index + 5:end_index]
-                    return f'{ping_time} ms'
-            return 'Online'
+                    return 'Online', f'{ping_time} ms'
+            return 'Online', 'N/A'
         else:
-            return 'Offline'
+            return 'Offline', 'N/A'
     except Exception:
-        return 'Erreur lors du ping'
-
+        return 'Erreur lors du ping', 'N/A'
 
 async def update_servers_status():
     await bot.wait_until_ready()
@@ -62,17 +60,14 @@ async def update_servers_status():
             name = server['name']
             ip = server['ip']
             maintenance = server.get('maintenance')
-            ping_result = ""  # Déplacer l'initialisation ici
 
             if maintenance:
                 status = '<:idle:1118875857512038560> ``Idle``'
+                ping_result = 'N/A'
             else:
-                status = await ping_server(ip)
+                status, ping_result = await ping_server(ip)
                 if status == "Online":
                     status = "<:on:1118875860854915152> ``Online``"
-                    ping_result = await ping_server(ip)  # Assigner la valeur ici
-                    if ping_result.startswith("Erreur"):
-                        status = "<:error:YOUR_ERROR_EMOJI_ID> ``Error``"
                 else:
                     status = "<:off:1118875858841649183> ``Offline``"
             
