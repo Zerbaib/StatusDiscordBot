@@ -31,13 +31,22 @@ async def ping_server(ip):
         result = await asyncio.create_subprocess_shell(
             f'ping -c 1 {ip}', stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
-        await result.communicate()
+        output, _ = await result.communicate()
+        output = output.decode('utf-8')
         if result.returncode == 0:
+            # Extraire le temps de ping de la sortie
+            start_index = output.find('time=')
+            if start_index != -1:
+                end_index = output.find(' ms', start_index)
+                if end_index != -1:
+                    ping_time = output[start_index + 5:end_index]
+                    return f'{ping_time} ms'
             return 'Online'
         else:
             return 'Offline'
     except Exception:
         return 'Erreur lors du ping'
+
 
 async def update_servers_status():
     await bot.wait_until_ready()
@@ -67,7 +76,7 @@ async def update_servers_status():
                     else:
                          status = "<:off:1118875858841649183> ``Offline``"
             
-            embed.add_field(name=name, value=f'{status} With {ping_result}ms', inline=False)
+            embed.add_field(name=name, value=f'{status} With {ping_result}', inline=False)
 
         if embed_message:
             embed.add_field(name="legend", value="If is <:on:1118875860854915152> Is online!\nIf is <:idle:1118875857512038560> the server has bugs\nIf is <:off:1118875858841649183> The server is offline", inline=False)
