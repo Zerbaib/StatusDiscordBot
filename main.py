@@ -62,16 +62,17 @@ async def update_servers_status():
             name = server['name']
             ip = server['ip']
             maintenance = server.get('maintenance')
+            ping_result = ""
 
             if maintenance:
-                status = '<:idle:1118875857512038560> ``Idle``'
-                ping_result = ""
+                status = '<:idle:1118875857512038560> ``Idle``'  
             else:
-                ping_result = await ping_server(ip)
-                if ping_result.startswith("Erreur"):
-                    status = "<:error:YOUR_ERROR_EMOJI_ID> ``Error``"
-                elif ping_result == "Online":
+                status = await ping_server(ip)
+                if status == "Online":
                     status = "<:on:1118875860854915152> ``Online``"
+                    ping_result = await ping_server(ip)
+                    if ping_result.startswith("Erreur"):
+                        status = "<:error:YOUR_ERROR_EMOJI_ID> ``Error``"
                 else:
                     status = "<:off:1118875858841649183> ``Offline``"
             
