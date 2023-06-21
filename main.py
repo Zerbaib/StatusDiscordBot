@@ -128,13 +128,15 @@ async def maintenance(ctx: disnake.ApplicationCommandInteraction, server: str, o
                 status = "False"
 
         save_servers(servers)
-        await ctx.author.send(f"Server config change\n" + 
-                              f"NAME = {server['name']}\n" +
-                              f"OPTION = {option}\n" +
-                              f"STATUS = {status}")
+        embed = disnake.Embed(title="Server config change", description=f"Server configuration has been updated:\n\n"
+                                                                        f"**NAME**: {server['name']}\n"
+                                                                        f"**OPTION**: {option}\n"
+                                                                        f"**STATUS**: {status}")
+        await ctx.author.send(embed=embed)
     else:
         await ctx.author.send(f"Server {server} not found.")
 
     await ctx.send("done", delete_after=config.del_time)
+
 
 bot.run(config.TOKEN)
