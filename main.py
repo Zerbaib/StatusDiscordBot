@@ -96,7 +96,7 @@ bot.loop.create_task(update_servers_status())
     name="maintenance",
     description="Enable or disable maintenance mode for a server"
 )
-async def maintenance(ctx: disnake.ApplicationCommandInteraction, server: str, option: disnake.OptionChoice(choices=["idle", "not here"])):
+async def maintenance(ctx: disnake.ApplicationCommandInteraction, server: str, option: str(disnake.OptionChoice(choices=["idle", "not here"]))):
     if ctx.author.id != config.YOUR_ID:
         await ctx.send("You are not authorized to execute this command.")
         return
