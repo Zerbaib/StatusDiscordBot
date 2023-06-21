@@ -113,14 +113,24 @@ async def maintenance(ctx: disnake.ApplicationCommandInteraction, server: str, o
 
     if server:
         if option.lower() == 'idle':
-            server['maintenance'] = True
-            server['not_installed'] = False
-        elif option.lower() == 'not here':
-            server['maintenance'] = False
-            server['not_installed'] = True
+            opt = "idle"
+            if server['maintenance'] ==False:
+                server['maintenance'] = True
+            else:
+                server['maintenance'] = False
+        if option.lower() == 'not here':
+            opt = "not_installed"
+            if server['not_installed'] == False:
+                server['not_installed'] = True
+            else:
+                server['not_installed'] = False
 
         save_servers(servers)
         await ctx.author.send(f"Maintenance mode for {server['name']} has been {'enabled' if server['maintenance'] else 'disabled'}.")
+        await ctx.author.send(f"Server config change\n" + 
+                              f"NAME = {server['name']}\n" +
+                              f"OPTION = {opt}\n" +
+                              f"STATUS = {server[opt]}")
     else:
         await ctx.author.send(f"Server {server} not found.")
 
