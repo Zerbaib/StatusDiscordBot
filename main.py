@@ -96,9 +96,14 @@ bot.loop.create_task(update_servers_status())
     name="maintenance",
     description="Enable or disable maintenance mode for a server"
 )
-async def maintenance(ctx: disnake.ApplicationCommandInteraction, server: str, option: str(disnake.OptionChoice(choices=["idle", "not here"]))):
+async def maintenance(ctx: disnake.ApplicationCommandInteraction, server: str, option: str):
     if ctx.author.id != config.YOUR_ID:
         await ctx.send("You are not authorized to execute this command.")
+        return
+
+    valid_options = ['idle', 'not here']
+    if option.lower() not in valid_options:
+        await ctx.send(f"Invalid option: {option}. Valid options are: {', '.join(valid_options)}.")
         return
 
     with open('servers.json', 'r') as servers_file:
@@ -113,9 +118,6 @@ async def maintenance(ctx: disnake.ApplicationCommandInteraction, server: str, o
         elif option.lower() == 'not here':
             server['maintenance'] = False
             server['not_installed'] = True
-        else:
-            await ctx.author.send(f"Invalid option: {option}.")
-            return
 
         save_servers(servers)
         await ctx.author.send(f"Maintenance mode for {server['name']} has been {'enabled' if server['maintenance'] else 'disabled'}.")
