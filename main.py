@@ -128,7 +128,6 @@ async def maintenance(ctx: disnake.ApplicationCommandInteraction, server: str, o
                 status = "False"
 
         save_servers(servers)
-        await ctx.author.send(f"Maintenance mode for {server['name']} has been {'enabled' if server['maintenance'] else 'disabled'}.")
         await ctx.author.send(f"Server config change\n" + 
                               f"NAME = {server['name']}\n" +
                               f"OPTION = {option}\n" +
