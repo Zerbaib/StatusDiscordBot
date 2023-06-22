@@ -138,5 +138,44 @@ async def maintenance(ctx: disnake.ApplicationCommandInteraction, server: str, o
 
     await ctx.send("done", delete_after=config.del_time)
 
+@bot.slash_command(
+    name="add",
+    description="Add a server to the database"
+)
+async def add_server(ctx: disnake.ApplicationCommandInteraction, name: str, ip: str):
+    if ctx.author.id != config.YOUR_ID:
+        await ctx.send("You are not authorized to execute this command.")
+        return
+
+    with open('servers.json', 'r') as servers_file:
+        servers = json.load(servers_file)
+
+    # Vérifier si le serveur existe déjà dans la base de données
+    existing_server = next((s for s in servers if s['name'].lower() == name.lower()), None)
+    if existing_server:
+        await ctx.send("Server already exists in the database.")
+        return
+
+    # Ajouter le nouveau serveur à la base de données
+    new_server = {
+        "name": name,
+        "ip": ip,
+        "maintenance": False,
+        "not_installed": False,
+        "status": "",
+        "last_status_change": 0
+    }
+    servers.append(new_server)
+    save_servers(servers)
+
+    embed = disnake.Embed(title="Server add in config", 
+                          description=f"Server as bin added:\n\n"
+                                        f"**NAME**: {name}\n"
+                                        f"**IP**: {ip}\n")
+    await ctx.author.send(embed=embed)
+    await ctx.send("done", delete_after=config.del_time)
+    # Mettre à jour l'embed des status
+    await update_servers_status()
+
 
 bot.run(config.TOKEN)
