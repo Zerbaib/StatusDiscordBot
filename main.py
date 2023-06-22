@@ -41,13 +41,12 @@ async def send_notification(name):
     user = await bot.fetch_user(config.YOUR_ID)
 
     embed = disnake.Embed(
-        title="A server as come offline",
+        title="A server has come offline",
         description=f"The server {name} is now offline.",
         color=disnake.Color.red()  # Couleur du embed (rouge dans cet exemple)
     )
 
     await user.send(embed=embed)
-
 
 async def ping_server(ip):
     if ip == 'not here':
