@@ -24,7 +24,7 @@ if not os.path.exists(config_file_path):
     }
     
     with open(config_file_path, 'w') as config_file:
-        json.dump(default_config, config_file, indent=4)
+        config_file.write(default_config)
 
 bot = commands.Bot(command_prefix='!', intents=disnake.Intents.all())
 
