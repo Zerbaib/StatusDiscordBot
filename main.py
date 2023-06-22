@@ -189,11 +189,14 @@ async def del_server(ctx: disnake.ApplicationCommandInteraction, name: str):
         servers = json.load(servers_file)
 
     server = next((s for s in servers if s['name'].lower() == name.lower()), None)
-
+    ip = server["ip"]
     if server:
         servers.remove(server)
         save_servers(servers)
-        embed = disnake.Embed(title="Server deleted", description=f"Server {name}\nWas deleted")
+        embed = disnake.Embed(title="Server deleted", 
+                              description=f"Server as bin deleted\n\n"
+                                            f"**NAME**: {name}"
+                                            f"**IP**: {ip}")
         await ctx.author.send(embed=embed)
     else:
         await ctx.author.send(f"Server {name} not found.")
