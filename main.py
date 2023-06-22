@@ -101,7 +101,7 @@ async def maintenance(ctx: disnake.ApplicationCommandInteraction, server: str, o
         await ctx.send("You are not authorized to execute this command.")
         return
 
-    valid_options = ['idle', 'not here']
+    valid_options = ['idle', 'not_here']
     if option.lower() not in valid_options:
         await ctx.send(f"Invalid option: {option}. Valid options are: {', '.join(valid_options)}.")
         return
