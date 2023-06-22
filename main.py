@@ -45,7 +45,6 @@ async def send_notification(name):
         description=f"The server {name} is now offline.",
         color=disnake.Color.red()  # Couleur du embed (rouge dans cet exemple)
     )
-    embed.set_footer(text="Notification de statut de serveur")  # Texte du pied de page du embed
 
     await user.send(embed=embed)
 
