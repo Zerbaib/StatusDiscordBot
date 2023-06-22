@@ -39,7 +39,16 @@ async def update_server_count():
 
 async def send_notification(server_name):
     user = await bot.fetch_user(config.YOUR_ID)
-    await user.send(f"Le serveur {server_name} est passé hors ligne.")
+
+    embed = disnake.Embed(
+        title="A server as come offline",
+        description=f"The server {server_name} is now offline.",
+        color=disnake.Color.red()  # Couleur du embed (rouge dans cet exemple)
+    )
+    embed.set_footer(text="Notification de statut de serveur")  # Texte du pied de page du embed
+
+    await user.send(embed=embed)
+
 
 async def ping_server(ip):
     if ip == 'not here':
