@@ -41,18 +41,17 @@ async def send_notification(name):
     user = await bot.fetch_user(config.YOUR_ID)
 
     embed = disnake.Embed(
-        title="A server as come offline",
+        title="A server has gone offline",
         description=f"The server {name} is now offline.",
         color=disnake.Color.red()  # Couleur du embed (rouge dans cet exemple)
     )
 
     await user.send(embed=embed)
 
-
 async def ping_server(ip):
     if ip == 'not here':
         return 'Not Here', 'N/A'
-    
+
     try:
         result = await asyncio.create_subprocess_shell(
             f'ping -c 1 {ip}', stdout=subprocess.PIPE, stderr=subprocess.PIPE
@@ -76,11 +75,11 @@ async def update_servers_status():
     await bot.wait_until_ready()
     server_channel = bot.get_channel(config.CHAN_ID)
     embed_message = None
-    
+
     while not bot.is_closed():
         with open('servers.json', 'r') as servers_file:
             servers = json.load(servers_file)
-        
+
         embed = disnake.Embed(title='Status of servers')
         for server in servers:
             name = server['name']
@@ -100,25 +99,28 @@ async def update_servers_status():
                     status = "<:on:1118875860854915152> ``Online``"
                 else:
                     status = "<:off:1118875858841649183> ``Offline``"
-            
+
                 if server.get('status') == 'Online' and status == 'Offline':
                     await send_notification(name)
 
             embed.add_field(name=name, value=f'{status} With ``{ping_result}``', inline=False)
 
         if embed_message:
-            embed.add_field(name="legend", value="If is <:on:1118875860854915152> the server is online!\nIf is <:idle:1118875857512038560> the server has bugs\nIf is <:off:1118875858841649183> The server is offline\nIf is <:no:1121213438505517197> the server is not installed", inline=False)
+            embed.add_field(
+                name="legend",
+                value="If is <:on:1118875860854915152>, the server is online!\nIf is <:idle:1118875857512038560>, the server has bugs.\nIf is <:off:1118875858841649183>, the server is offline.\nIf is <:no:1121213438505517197>, the server is not installed",
+                inline=False
+            )
             await embed_message.edit(embed=embed)
         else:
             embed_message = await server_channel.send(embed=embed)
 
         save_servers(servers)  # Save server configuration
-        
+
         await asyncio.sleep(config.sec_loop)
 
 bot.loop.create_task(update_servers_status())
 bot.loop.create_task(update_server_count())
-
 
 @bot.slash_command(
     name="maintenance",
@@ -156,10 +158,12 @@ async def maintenance(ctx: disnake.ApplicationCommandInteraction, server: str, o
                 status = "False"
 
         save_servers(servers)
-        embed = disnake.Embed(title="Server config change", description=f"Server configuration has been updated:\n\n"
-                                                                        f"**NAME**: {server['name']}\n"
-                                                                        f"**OPTION**: {option}\n"
-                                                                        f"**STATUS**: {status}")
+        embed = disnake.Embed(title="Server config change", 
+                              description=f"Server configuration has been updated:\n\n"
+                                          f"**NAME**: {server['name']}\n"
+                                          f"**OPTION**: {option}\n"
+                                          f"**STATUS**: {status}"
+        )
         await ctx.author.send(embed=embed)
     else:
         await ctx.author.send(f"Server {server} not found.")
