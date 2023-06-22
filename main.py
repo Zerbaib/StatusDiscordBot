@@ -37,16 +37,6 @@ async def update_server_count():
 
         await asyncio.sleep(config.sec_loop)  # Attendre un certain intervalle avant la prochaine mise à jour
 
-async def send_notification(name):
-    user = await bot.fetch_user(config.YOUR_ID)
-
-    embed = disnake.Embed(
-        title="A server has come offline",
-        description=f"The server {name} is now offline.",
-        color=disnake.Color.red()  # Couleur du embed (rouge dans cet exemple)
-    )
-
-    await user.send(embed=embed)
 
 async def ping_server(ip):
     if ip == 'not here':
@@ -99,10 +89,6 @@ async def update_servers_status():
                     status = "<:on:1118875860854915152> ``Online``"
                 else:
                     status = "<:off:1118875858841649183> ``Offline``"
-                
-                # Vérifier si le statut a changé de "Online" à "Offline"
-                if server.get('status') == 'Online' and status == 'Offline':
-                    await send_notification(name)  # Appeler la fonction de notification
             
             embed.add_field(name=name, value=f'{status} With ``{ping_result}``', inline=False)
 
@@ -117,4 +103,118 @@ async def update_servers_status():
         await asyncio.sleep(config.sec_loop)
 
 bot.loop.create_task(update_servers_status())
+bot.loop.create_task(update_server_count())
+
+
+@bot.slash_command(
+    name="maintenance",
+    description="Enable or disable maintenance mode for a server"
+)
+async def maintenance(ctx: disnake.ApplicationCommandInteraction, server: str, option: str):
+    if ctx.author.id != config.YOUR_ID:
+        await ctx.send("You are not authorized to execute this command.")
+        return
+
+    valid_options = ['idle', 'not_here']
+    if option.lower() not in valid_options:
+        await ctx.send(f"Invalid option: {option}. Valid options are: {', '.join(valid_options)}.")
+        return
+
+    with open('servers.json', 'r') as servers_file:
+        servers = json.load(servers_file)
+
+    server = next((s for s in servers if s['name'].lower() == server.lower()), None)
+
+    if server:
+        if option.lower() == 'idle':
+            if server['maintenance'] == False:
+                server['maintenance'] = True
+                status = "True"
+            else:
+                server['maintenance'] = False
+                status = "False"
+        if option.lower() == 'not_here':
+            if server['not_installed'] == False:
+                server['not_installed'] = True
+                status = "True"
+            else:
+                server['not_installed'] = False
+                status = "False"
+
+        save_servers(servers)
+        embed = disnake.Embed(title="Server config change", description=f"Server configuration has been updated:\n\n"
+                                                                        f"**NAME**: {server['name']}\n"
+                                                                        f"**OPTION**: {option}\n"
+                                                                        f"**STATUS**: {status}")
+        await ctx.author.send(embed=embed)
+    else:
+        await ctx.author.send(f"Server {server} not found.")
+
+    await ctx.send("done", delete_after=config.del_time)
+
+@bot.slash_command(
+    name="add",
+    description="Add a server to the database"
+)
+async def add_server(ctx: disnake.ApplicationCommandInteraction, name: str, ip: str):
+    if ctx.author.id != config.YOUR_ID:
+        await ctx.send("You are not authorized to execute this command.")
+        return
+
+    with open('servers.json', 'r') as servers_file:
+        servers = json.load(servers_file)
+
+    # Vérifier si le serveur existe déjà dans la base de données
+    existing_server = next((s for s in servers if s['name'].lower() == name.lower()), None)
+    if existing_server:
+        await ctx.send("Server already exists in the database.")
+        return
+
+    # Ajouter le nouveau serveur à la base de données
+    new_server = {
+        "name": name,
+        "ip": ip,
+        "maintenance": False,
+        "not_installed": False,
+        "status": "",
+        "last_status_change": 0
+    }
+    servers.append(new_server)
+    save_servers(servers)
+
+    embed = disnake.Embed(title="Server add in config", 
+                          description=f"Server as bin added:\n\n"
+                                        f"**NAME**: {name}\n"
+                                        f"**IP**: {ip}\n")
+    await ctx.author.send(embed=embed)
+    await ctx.send("done", delete_after=config.del_time)
+    save_servers(servers)
+
+@bot.slash_command(
+    name="del",
+    description="Remove a server from the database"
+)
+async def del_server(ctx: disnake.ApplicationCommandInteraction, name: str):
+    if ctx.author.id != config.YOUR_ID:
+        await ctx.send("You are not authorized to execute this command.")
+        return
+
+    with open('servers.json', 'r') as servers_file:
+        servers = json.load(servers_file)
+
+    server = next((s for s in servers if s['name'].lower() == name.lower()), None)
+    ip = server["ip"]
+    if server:
+        servers.remove(server)
+        save_servers(servers)
+        embed = disnake.Embed(title="Server deleted", 
+                              description=f"Server as bin deleted\n\n"
+                                            f"**NAME**: {name}\n"
+                                            f"**IP**: {ip}")
+        await ctx.author.send(embed=embed)
+    else:
+        await ctx.author.send(f"Server {name} not found.")
+    
+    await ctx.send("done", delete_after=config.del_time)
+
 bot.run(config.TOKEN)
