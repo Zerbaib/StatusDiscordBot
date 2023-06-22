@@ -9,22 +9,27 @@ bot = commands.Bot(command_prefix='!', intents=disnake.Intents.all())
 
 @bot.event
 async def on_ready():
-    # Load the configuration from the JSON file
-    with open('servers.json', 'r') as servers_file:
-        servers = json.load(servers_file)
-
-    servers_count = len(servers)
-    await bot.change_presence(
-        activity=disnake.Activity(
-            type=disnake.ActivityType.watching,
-            name=f'{servers_count} servers'
-        )
-    )
+    update_server_count()  # Met à jour le nombre de serveurs au démarrage
     print(f'Logged in as {bot.user.name}')
 
 def save_servers(servers):
     with open('servers.json', 'w') as servers_file:
         json.dump(servers, servers_file, indent=4, ensure_ascii=False)
+
+async def update_server_count():
+    while not bot.is_closed():
+        with open('servers.json', 'r') as servers_file:
+            servers = json.load(servers_file)
+
+        servers_count = len(servers)
+        activity = disnake.Activity(
+            type=disnake.ActivityType.watching,
+            name=f'{servers_count} servers'
+        )
+        await bot.change_presence(activity=activity)
+
+        await asyncio.sleep(config.sec_loop)  # Attendre un certain intervalle avant la prochaine mise à jour
+
 
 async def ping_server(ip):
     if ip == 'not here':
@@ -91,6 +96,8 @@ async def update_servers_status():
         await asyncio.sleep(config.sec_loop)
 
 bot.loop.create_task(update_servers_status())
+bot.loop.create_task(update_server_count())
+
 
 @bot.slash_command(
     name="maintenance",
