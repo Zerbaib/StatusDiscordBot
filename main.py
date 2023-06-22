@@ -37,12 +37,12 @@ async def update_server_count():
 
         await asyncio.sleep(config.sec_loop)  # Attendre un certain intervalle avant la prochaine mise à jour
 
-async def send_notification(server_name):
+async def send_notification(name):
     user = await bot.fetch_user(config.YOUR_ID)
 
     embed = disnake.Embed(
         title="A server as come offline",
-        description=f"The server {server_name} is now offline.",
+        description=f"The server {name} is now offline.",
         color=disnake.Color.red()  # Couleur du embed (rouge dans cet exemple)
     )
     embed.set_footer(text="Notification de statut de serveur")  # Texte du pied de page du embed
