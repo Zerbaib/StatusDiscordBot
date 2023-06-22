@@ -12,20 +12,6 @@ if not os.path.exists(servers_file_path):
     with open(servers_file_path, 'w') as servers_file:
         servers_file.write('[]')
 
-config_file_path = 'config.json'
-if not os.path.exists(config_file_path):
-    # Créer le fichier avec une configuration par défaut
-    default_config = {
-        "TOKEN": "your_bot_token",
-        "CHAN_ID": 1234567890,  # ID of the channel where the server status will be displayed
-        "YOUR_ID": 1234567890,  # Your user ID (to authorize maintenance command)
-        "sec_loop": 10,  # Number of seconds between each status update loop
-        "del_time": 2  # Number of seconds to keep the "done" message before deleting it
-    }
-    
-    with open(config_file_path, 'w') as config_file:
-        config_file.write(default_config)
-
 bot = commands.Bot(command_prefix='!', intents=disnake.Intents.all())
 
 @bot.event
