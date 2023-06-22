@@ -39,7 +39,7 @@ async def update_server_count():
 
 async def send_notification(name):
     user = await bot.fetch_user(config.YOUR_ID)
-    print(user)
+    print("user get", user)
 
     embed = disnake.Embed(
         title="A server has gone offline",
