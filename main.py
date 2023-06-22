@@ -87,7 +87,7 @@ async def update_servers_status():
             embed_message = await server_channel.send(embed=embed)
 
         save_servers(servers)  # Save server configuration
-
+        
         await asyncio.sleep(config.sec_loop)
 
 bot.loop.create_task(update_servers_status())
@@ -174,8 +174,6 @@ async def add_server(ctx: disnake.ApplicationCommandInteraction, name: str, ip: 
                                         f"**IP**: {ip}\n")
     await ctx.author.send(embed=embed)
     await ctx.send("done", delete_after=config.del_time)
-    # Mettre à jour l'embed des status
-    await update_servers_status()
-
+    save_servers(servers)
 
 bot.run(config.TOKEN)
