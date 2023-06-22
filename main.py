@@ -119,7 +119,7 @@ async def maintenance(ctx: disnake.ApplicationCommandInteraction, server: str, o
             else:
                 server['maintenance'] = False
                 status = "False"
-        if option.lower() == 'not here':
+        if option.lower() == 'not_here':
             if server['not_installed'] == False:
                 server['not_installed'] = True
                 status = "True"
