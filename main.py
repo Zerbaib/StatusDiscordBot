@@ -16,7 +16,7 @@ bot = commands.Bot(command_prefix='!', intents=disnake.Intents.all())
 
 @bot.event
 async def on_ready():
-    update_server_count()  # Met à jour le nombre de serveurs au démarrage
+    await update_server_count()  # Met à jour le nombre de serveurs au démarrage
     print(f'Logged in as {bot.user.name}')
 
 def save_servers(servers):
