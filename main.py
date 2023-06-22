@@ -37,6 +37,17 @@ async def update_server_count():
 
         await asyncio.sleep(config.sec_loop)  # Attendre un certain intervalle avant la prochaine mise à jour
 
+async def send_notification(name):
+    user = await bot.fetch_user(config.YOUR_ID)
+
+    embed = disnake.Embed(
+        title="A server as come offline",
+        description=f"The server {name} is now offline.",
+        color=disnake.Color.red()  # Couleur du embed (rouge dans cet exemple)
+    )
+
+    await user.send(embed=embed)
+
 
 async def ping_server(ip):
     if ip == 'not here':
@@ -90,6 +101,9 @@ async def update_servers_status():
                 else:
                     status = "<:off:1118875858841649183> ``Offline``"
             
+                if server.get('status') == 'Online' and status == 'Offline':
+                    await send_notification(name)
+
             embed.add_field(name=name, value=f'{status} With ``{ping_result}``', inline=False)
 
         if embed_message:
