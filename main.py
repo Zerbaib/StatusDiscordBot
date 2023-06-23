@@ -63,8 +63,8 @@ async def send_notification(name):
     print("user get", user)
 
     embed = disnake.Embed(
-        title="A server has gone offline",
-        description=f"The server {name} is now offline.",
+        title=f"WARNING",
+        description=f"**The server ``{name}``**\nWas **OFFLINE** !",
         color=disnake.Color.red()  # Couleur du embed (rouge dans cet exemple)
     )
 
