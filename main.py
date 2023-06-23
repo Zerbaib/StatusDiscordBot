@@ -265,4 +265,4 @@ async def del_server(ctx: disnake.ApplicationCommandInteraction, name: str):
     
     await ctx.send("done", delete_after=config.del_time)
 
-bot.run(config.TOKEN)
+bot.run(token)
