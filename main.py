@@ -7,10 +7,31 @@ import os
 import config
 
 servers_file_path = 'servers.json'
+config_file_path = 'config.json'
+
 if not os.path.exists(servers_file_path):
-    # Créer le fichier avec une liste vide
     with open(servers_file_path, 'w') as servers_file:
         servers_file.write('[]')
+
+if not os.path.exists(config_file_path):
+    config_data = {
+        "TOKEN": "your_bot_token",
+        "CHAN_ID": 1234567890,
+        "YOUR_ID": 1234567890,
+        "sec_loop": 10,
+        "del_time": 2
+    }
+    with open(config_file_path, 'w') as config_file:
+        json.dump(config_data, config_file, indent=4)
+
+with open(config_file_path, 'r') as config_file:
+    config = json.load(config_file)
+
+token = config["TOKEN"]
+chan = config["CHAN_ID"]
+you = config["YOUR_ID"]
+sec_loop = config["sec_loop"]
+del_time = config["del_time"]
 
 bot = commands.Bot(command_prefix='!', intents=disnake.Intents.all())
 
