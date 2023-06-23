@@ -4,7 +4,6 @@ import asyncio
 import subprocess
 import json
 import os
-import config
 
 servers_file_path = 'servers.json'
 config_file_path = 'config.json'
