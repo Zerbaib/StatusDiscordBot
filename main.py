@@ -18,8 +18,8 @@ if not os.path.exists(config_file_path):
         "TOKEN": "your_bot_token",
         "CHAN_ID": 1234567890,
         "YOUR_ID": 1234567890,
-        "sec_loop": 10,
-        "del_time": 2
+        "sec_loop": 60,
+        "del_time": 3
     }
     with open(config_file_path, 'w') as config_file:
         json.dump(config_data, config_file, indent=4)
