@@ -59,7 +59,7 @@ async def update_server_count():
         await asyncio.sleep(sec_loop)  # Attendre un certain intervalle avant la prochaine mise à jour
 
 async def send_notification(name):
-    user = await bot.fetch_user(config.YOUR_ID)
+    user = await bot.fetch_user(you)
     print("user get", user)
 
     embed = disnake.Embed(
@@ -95,7 +95,7 @@ async def ping_server(ip):
 
 async def update_servers_status():
     await bot.wait_until_ready()
-    server_channel = bot.get_channel(config.CHAN_ID)
+    server_channel = bot.get_channel(chan)
     embed_message = None
 
     while not bot.is_closed():
@@ -156,7 +156,7 @@ bot.loop.create_task(update_server_count())
     description="Enable or disable maintenance mode for a server"
 )
 async def maintenance(ctx: disnake.ApplicationCommandInteraction, server: str, option: str):
-    if ctx.author.id != config.YOUR_ID:
+    if ctx.author.id != you:
         await ctx.send("You are not authorized to execute this command.")
         return
 
@@ -195,7 +195,7 @@ async def maintenance(ctx: disnake.ApplicationCommandInteraction, server: str, o
         )
         await ctx.author.send(embed=embed)
     else:
-        await ctx.author.send(f"Server {server} not found.")
+        await ctx.author.send(f"Server {server} not found.", delete_after=del_time)
 
     await ctx.send("done", delete_after=del_time)
 
@@ -204,7 +204,7 @@ async def maintenance(ctx: disnake.ApplicationCommandInteraction, server: str, o
     description="Add a server to the database"
 )
 async def add_server(ctx: disnake.ApplicationCommandInteraction, name: str, ip: str):
-    if ctx.author.id != config.YOUR_ID:
+    if ctx.author.id != you:
         await ctx.send("You are not authorized to execute this command.")
         return
 
@@ -243,7 +243,7 @@ async def add_server(ctx: disnake.ApplicationCommandInteraction, name: str, ip: 
     description="Remove a server from the database"
 )
 async def del_server(ctx: disnake.ApplicationCommandInteraction, name: str):
-    if ctx.author.id != config.YOUR_ID:
+    if ctx.author.id != you:
         await ctx.send("You are not authorized to execute this command.")
         return
 
