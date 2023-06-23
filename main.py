@@ -102,7 +102,9 @@ async def update_servers_status():
                     status = "<:off:1118875858841649183> ``Offline``"
                 
             if server.get('status') == 'Online' and status == 'Offline':
+                print("1")
                 await send_notification(name)
+                print("2")
 
             embed.add_field(name=name, value=f'{status} With ``{ping_result}``', inline=False)
 
