@@ -119,8 +119,6 @@ async def update_servers_status():
                 ping_result = 'N/A'
             else:
                 status, ping_result = await ping_server(ip)
-                print(status)
-                print(ping_result)
                 if status == "Online":
                     stats = "Online"
                     status = "<:on:1118875860854915152> ``Online``"
