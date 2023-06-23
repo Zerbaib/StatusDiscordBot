@@ -83,8 +83,10 @@ async def update_servers_status():
 
         embed = disnake.Embed(title='Status of servers')
         for server in servers:
+            stats = ''
             name = server['name']
             ip = server['ip']
+            alert = server['alert']
             maintenance = server.get('maintenance')
             not_installed = server.get('not_installed')
 
@@ -96,14 +98,20 @@ async def update_servers_status():
                 ping_result = 'N/A'
             else:
                 status, ping_result = await ping_server(ip)
+                print(status)
+                print(ping_result)
                 if status == "Online":
+                    stats = "Online"
                     status = "<:on:1118875860854915152> ``Online``"
                 else:
+                    stats = "Offline"
                     status = "<:off:1118875858841649183> ``Offline``"
                 
-            print(server.get("status"))
-            if server.get('status') == 'Online' and status == 'Offline':
+            if stats == 'Offline' and server['alert'] == False:
                 await send_notification(name)
+                server['alert'] = True
+            if stats == 'Online' and server['alert'] == True:
+                server['alert'] = False
 
             embed.add_field(name=name, value=f'{status} With ``{ping_result}``', inline=False)
 
@@ -197,7 +205,8 @@ async def add_server(ctx: disnake.ApplicationCommandInteraction, name: str, ip: 
         "maintenance": False,
         "not_installed": False,
         "status": "",
-        "last_status_change": 0
+        "last_status_change": 0,
+        "alert": False
     }
     servers.append(new_server)
     save_servers(servers)
