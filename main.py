@@ -56,7 +56,7 @@ async def update_server_count():
         )
         await bot.change_presence(activity=activity)
 
-        await asyncio.sleep(config.sec_loop)  # Attendre un certain intervalle avant la prochaine mise à jour
+        await asyncio.sleep(sec_loop)  # Attendre un certain intervalle avant la prochaine mise à jour
 
 async def send_notification(name):
     user = await bot.fetch_user(config.YOUR_ID)
@@ -146,7 +146,7 @@ async def update_servers_status():
 
         save_servers(servers)  # Save server configuration
 
-        await asyncio.sleep(config.sec_loop)
+        await asyncio.sleep(sec_loop)
 
 bot.loop.create_task(update_servers_status())
 bot.loop.create_task(update_server_count())
@@ -197,7 +197,7 @@ async def maintenance(ctx: disnake.ApplicationCommandInteraction, server: str, o
     else:
         await ctx.author.send(f"Server {server} not found.")
 
-    await ctx.send("done", delete_after=config.del_time)
+    await ctx.send("done", delete_after=del_time)
 
 @bot.slash_command(
     name="add",
@@ -235,7 +235,7 @@ async def add_server(ctx: disnake.ApplicationCommandInteraction, name: str, ip: 
                                         f"**NAME**: {name}\n"
                                         f"**IP**: {ip}\n")
     await ctx.author.send(embed=embed)
-    await ctx.send("done", delete_after=config.del_time)
+    await ctx.send("done", delete_after=del_time)
     save_servers(servers)
 
 @bot.slash_command(
@@ -263,6 +263,6 @@ async def del_server(ctx: disnake.ApplicationCommandInteraction, name: str):
     else:
         await ctx.author.send(f"Server {name} not found.")
     
-    await ctx.send("done", delete_after=config.del_time)
+    await ctx.send("done", delete_after=del_time)
 
 bot.run(token)
