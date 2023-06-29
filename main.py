@@ -17,6 +17,7 @@ if not os.path.exists(config_file_path):
     config_data = {
         "TOKEN": "your_bot_token",
         "CHAN_ID": 1234567890,
+        "MSG_ID": None,
         "YOUR_ID": 1234567890,
         "sec_loop": 60,
         "del_time": 3
@@ -86,6 +87,13 @@ async def update_servers_status():
     user = await bot.fetch_user(you)
     server_channel = bot.get_channel(chan)
     embed_message = None
+    msg_id = config["MSG_ID"]
+
+    if msg_id:
+        try:
+            embed_message = await server_channel.fetch_message(msg_id)
+        except disnake.NotFound:
+            pass
 
     while not bot.is_closed():
         with open('servers.json', 'r') as servers_file:
@@ -96,7 +104,6 @@ async def update_servers_status():
             stats = ''
             name = server['name']
             ip = server['ip']
-            alert = server['alert']
             maintenance = server.get('maintenance')
             not_installed = server.get('not_installed')
 
@@ -126,15 +133,22 @@ async def update_servers_status():
 
             embed.add_field(name=name, value=f'{status} With ``{ping_result}``', inline=False)
 
+        embed.add_field(
+            name="legend",
+            value="If is <:on:1118875860854915152>, the server is online!\nIf is <:idle:1118875857512038560>, the server has bugs.\nIf is <:off:1118875858841649183>, the server is offline.\nIf is <:no:1121213438505517197>, the server is not installed",
+            inline=False
+        )
+
         if embed_message:
-            embed.add_field(
-                name="legend",
-                value="If is <:on:1118875860854915152>, the server is online!\nIf is <:idle:1118875857512038560>, the server has bugs.\nIf is <:off:1118875858841649183>, the server is offline.\nIf is <:no:1121213438505517197>, the server is not installed",
-                inline=False
-            )
             await embed_message.edit(embed=embed)
         else:
             embed_message = await server_channel.send(embed=embed)
+            msg_id = embed_message.id
+
+            # Sauvegarder l'ID du message dans le fichier de configuration
+            config["MSG_ID"] = msg_id
+            with open(config_file_path, 'w') as config_file:
+                json.dump(config, config_file, indent=4)
 
         save_servers(servers)  # Save server configuration
 
