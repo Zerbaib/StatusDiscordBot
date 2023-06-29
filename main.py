@@ -161,7 +161,12 @@ async def maintenance(ctx: disnake.ApplicationCommandInteraction, server: str, o
 
     valid_options = ['idle', 'not_here']
     if option.lower() not in valid_options:
-        await ctx.send(f"Invalid option: {option}. Valid options are: {', '.join(valid_options)}.")
+        embed = disnake.Embed(title="Invalid option !", 
+                              description=f"Only 2 option is possible:\n\n"
+                                          f"**For orange mode:**```idle```\n"
+                                          f"**For grey mode:**```not_here```",
+                              color=disnake.Color.red())
+        await ctx.send(embed=embed, delete_after=del_time)
         return
 
     with open('servers.json', 'r') as servers_file:
