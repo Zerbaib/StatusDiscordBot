@@ -1,5 +1,6 @@
 import disnake
 from disnake.ext import commands
+from utils import ping
 import asyncio
 import subprocess
 import json
@@ -57,18 +58,6 @@ async def update_server_count():
 
         await asyncio.sleep(sec_loop)  # Attendre un certain intervalle avant la prochaine mise à jour
 
-async def send_notification(name):
-    user = await bot.fetch_user(you)
-    print("user get", user)
-
-    embed = disnake.Embed(
-        title=f"WARNING",
-        description=f"**The server ``{name}``**\nWas **OFFLINE** !",
-        color=disnake.Color.red()  # Couleur du embed (rouge dans cet exemple)
-    )
-
-    await user.send(embed=embed)
-
 async def ping_server(ip):
     if ip == 'not here':
         return 'Not Here', 'N/A'
@@ -94,6 +83,7 @@ async def ping_server(ip):
 
 async def update_servers_status():
     await bot.wait_until_ready()
+    user = await bot.fetch_user(you)
     server_channel = bot.get_channel(chan)
     embed_message = None
 
@@ -126,9 +116,12 @@ async def update_servers_status():
                     status = "<:off:1118875858841649183> ``Offline``"
                 
             if stats == 'Offline' and server['alert'] == False:
-                await send_notification(name)
+                embed = ping.shutdown(name)
+                await user.send(embed=embed)
                 server['alert'] = True
             if stats == 'Online' and server['alert'] == True:
+                embed = ping.boot(name)
+                await user.send(embed=embed)
                 server['alert'] = False
 
             embed.add_field(name=name, value=f'{status} With ``{ping_result}``', inline=False)
