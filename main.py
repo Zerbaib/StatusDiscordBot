@@ -116,12 +116,12 @@ async def update_servers_status():
                     status = "<:off:1118875858841649183> ``Offline``"
                 
             if stats == 'Offline' and server['alert'] == False:
-                embed = ping.shutdown(name)
-                await user.send(embed=embed)
+                alert_s = ping.shutdown(name)
+                await user.send(embed=alert_s)
                 server['alert'] = True
             if stats == 'Online' and server['alert'] == True:
-                embed = ping.boot(name)
-                await user.send(embed=embed)
+                alert_b = ping.boot(name)
+                await user.send(embed=alert_b)
                 server['alert'] = False
 
             embed.add_field(name=name, value=f'{status} With ``{ping_result}``', inline=False)
