@@ -1,6 +1,6 @@
 import disnake
 from disnake.ext import commands
-from utils import alert
+from utils import alerts
 import asyncio
 import subprocess
 import json
@@ -116,11 +116,11 @@ async def update_servers_status():
                     status = "<:off:1118875858841649183> ``Offline``"
                 
             if stats == 'Offline' and server['alert'] == False:
-                alert_s = alert.shutdown(name)
+                alert_s = alerts.shutdown(name)
                 await user.send(embed=alert_s)
                 server['alert'] = True
             if stats == 'Online' and server['alert'] == True:
-                alert_b = alert.boot(name)
+                alert_b = alerts.boot(name)
                 await user.send(embed=alert_b)
                 server['alert'] = False
 
