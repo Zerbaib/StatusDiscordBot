@@ -1,6 +1,6 @@
 import disnake
 from disnake.ext import commands
-from utils import alerts
+from utils import alerts, statues
 import asyncio
 import subprocess
 import json
@@ -108,19 +108,19 @@ async def update_servers_status():
             not_installed = server.get('not_installed')
 
             if maintenance:
-                status = '<:idle:1118875857512038560> ``Idle``'
+                status = statues.idle
                 ping_result = 'N/A'
             elif not_installed:
-                status = '<:no:1121213438505517197> ``Not Here``'
+                status = statues.not_h
                 ping_result = 'N/A'
             else:
                 status, ping_result = await ping_server(ip)
                 if status == "Online":
                     stats = "Online"
-                    status = "<:on:1118875860854915152> ``Online``"
+                    status = statues.on
                 else:
                     stats = "Offline"
-                    status = "<:off:1118875858841649183> ``Offline``"
+                    status = statues.off
                 
             if stats == 'Offline' and server['alert'] == False:
                 alert_s = alerts.shutdown(name)
