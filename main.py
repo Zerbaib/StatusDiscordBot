@@ -239,10 +239,7 @@ async def add_server(ctx: disnake.ApplicationCommandInteraction, name: str, ip: 
     servers.append(new_server)
     save_servers(servers)
 
-    embed = disnake.Embed(title="Server add in config", 
-                          description=f"Server as bin added:\n\n"
-                                        f"**NAME**: {name}\n"
-                                        f"**IP**: {ip}\n")
+    embed = msg.adds(name, ip)
     await ctx.author.send(embed=embed)
     await ctx.send("done", delete_after=del_time)
     save_servers(servers)
