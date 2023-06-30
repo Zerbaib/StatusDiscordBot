@@ -24,6 +24,9 @@ if not os.path.exists(config_file_path):
     }
     with open(config_file_path, 'w') as config_file:
         json.dump(config_data, config_file, indent=4)
+    os.system("clear")
+    print("Your have to param the config.json")
+    exit()
 
 with open(config_file_path, 'r') as config_file:
     config = json.load(config_file)
