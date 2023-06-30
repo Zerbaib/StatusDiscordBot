@@ -9,7 +9,7 @@ def maitenance(servers, option, status):
                     f"**STATUS**: {status}"
         )
     if option == "idle":
-        emd.colour = disnake.Color.dark_orange()
+        emd.colour = disnake.Color.orange()
     else:
         emd.colour = disnake.Color.dark_grey()
 
