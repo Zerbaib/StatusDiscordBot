@@ -12,3 +12,5 @@ def maitenance(servers, option, status):
         emd.colour = disnake.Color.dark_orange()
     else:
         emd.colour = disnake.Color.dark_grey()
+
+    return emd
