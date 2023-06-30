@@ -101,7 +101,7 @@ async def update_servers_status():
 
         embed = disnake.Embed(
             title='Status of servers',
-            colour=disnake.Color.brand_green())
+            colour=disnake.Color.blurple())
         for server in servers:
             stats = ''
             name = server['name']
