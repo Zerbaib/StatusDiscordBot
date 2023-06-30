@@ -18,7 +18,7 @@ def adds(name, ip):
         description=f"Server as bin added:\n\n"
                     f"**NAME**: {name}\n"
                     f"**IP**: {ip}\n)",
-        colour=disnake.Color.blue()
+        colour=disnake.Color.to_rgb()
         )
     
     return emd
