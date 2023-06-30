@@ -99,7 +99,9 @@ async def update_servers_status():
         with open('servers.json', 'r') as servers_file:
             servers = json.load(servers_file)
 
-        embed = disnake.Embed(title='Status of servers')
+        embed = disnake.Embed(
+            title='Status of servers',
+            colour=disnake.Color.brand_green())
         for server in servers:
             stats = ''
             name = server['name']
