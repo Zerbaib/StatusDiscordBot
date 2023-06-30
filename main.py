@@ -1,6 +1,6 @@
 import disnake
 from disnake.ext import commands
-from utils import alerts, statues, msg
+from utils import alerts, statues, msg, errors
 import asyncio
 import subprocess
 import json
@@ -24,17 +24,12 @@ if not os.path.exists(servers_file_path):
 if not os.path.exists(config_file_path):
     with open(config_file_path, 'w') as config_file:
         json.dump(config_data, config_file, indent=4)
-    os.system("clear")
-    print("[101] Config was created\n"
-          "[101] You need to config the config.json")
-    exit()
+    errors.one01()
 else:
     with open(config_file_path, 'r') as config_file:
         config = json.load(config_file)
     if config_data == config:
-        os.system("clear")
-        print("[102] Config was not config")
-        exit()
+        errors.one02()
 
 token = config["TOKEN"]
 chan = config["CHAN_ID"]
@@ -88,6 +83,7 @@ async def ping_server(ip):
         else:
             return 'Offline', 'N/A'
     except Exception:
+        errors.two01()
         return 'Erreur lors du ping', 'N/A'
 
 async def update_servers_status():
@@ -101,6 +97,7 @@ async def update_servers_status():
         try:
             embed_message = await server_channel.fetch_message(msg_id)
         except disnake.NotFound:
+            errors.tree01()
             pass
 
     while not bot.is_closed():
@@ -154,11 +151,13 @@ async def update_servers_status():
         else:
             embed_message = await server_channel.send(embed=embed)
             msg_id = embed_message.id
+            errors.tree02()
 
             # Sauvegarder l'ID du message dans le fichier de configuration
             config["MSG_ID"] = msg_id
             with open(config_file_path, 'w') as config_file:
                 json.dump(config, config_file, indent=4)
+            errors.tree03()
 
         save_servers(servers)  # Save server configuration
 
