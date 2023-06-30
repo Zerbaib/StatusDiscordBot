@@ -8,28 +8,33 @@ import os
 
 servers_file_path = 'servers.json'
 config_file_path = 'config.json'
+config_data = {
+    "TOKEN": "your_bot_token",
+    "CHAN_ID": 1234567890,
+    "MSG_ID": None,
+    "YOUR_ID": 1234567890,
+    "sec_loop": 60,
+    "del_time": 3
+}
 
 if not os.path.exists(servers_file_path):
     with open(servers_file_path, 'w') as servers_file:
         servers_file.write('[]')
 
 if not os.path.exists(config_file_path):
-    config_data = {
-        "TOKEN": "your_bot_token",
-        "CHAN_ID": 1234567890,
-        "MSG_ID": None,
-        "YOUR_ID": 1234567890,
-        "sec_loop": 60,
-        "del_time": 3
-    }
     with open(config_file_path, 'w') as config_file:
         json.dump(config_data, config_file, indent=4)
     os.system("clear")
-    print("Your have to param the config.json")
+    print("[101] Config was created\n"
+          "[101] You need to config the config.json")
     exit()
-
-with open(config_file_path, 'r') as config_file:
-    config = json.load(config_file)
+else:
+    with open(config_file_path, 'r') as config_file:
+        config = json.load(config_file)
+    if config_data == config:
+        os.system("clear")
+        print("[102] Config was not config")
+        exit()
 
 token = config["TOKEN"]
 chan = config["CHAN_ID"]
