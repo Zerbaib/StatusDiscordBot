@@ -1,6 +1,6 @@
 import disnake
 from disnake.ext import commands
-from utils import alerts, statues
+from utils import alerts, statues, msg
 import asyncio
 import subprocess
 import json
@@ -200,12 +200,8 @@ async def maintenance(ctx: disnake.ApplicationCommandInteraction, server: str, o
                 status = "False"
 
         save_servers(servers)
-        embed = disnake.Embed(title="Server config change", 
-                              description=f"Server configuration has been updated:\n\n"
-                                          f"**NAME**: {server['name']}\n"
-                                          f"**OPTION**: {option}\n"
-                                          f"**STATUS**: {status}"
-        )
+        servers = server["name"]
+        embed = msg.maitenance(servers, option, status)
         await ctx.author.send(embed=embed)
     else:
         await ctx.author.send(f"Server {server} not found.", delete_after=del_time)
