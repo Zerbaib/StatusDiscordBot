@@ -138,7 +138,11 @@ async def update_servers_status():
                 await user.send(embed=alert_b)
                 server['alert'] = False
 
-            embed.add_field(name=name, value=f'{status} With ``{ping_result}``', inline=False)
+            embed.add_field(
+                name=name,
+                value=f'{status} With ``{ping_result}``',
+                inline=False
+                )
 
         embed.add_field(
             name="legend",
