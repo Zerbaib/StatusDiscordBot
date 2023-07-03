@@ -17,7 +17,7 @@ def adds(name, ip):
         title="Server add in config", 
         description=f"Server as bin added:\n\n"
                     f"**NAME**: {name}\n"
-                    f"**IP**: {ip}\n)",
+                    f"**IP**: {ip}\n",
         colour=disnake.Color.dark_green()
         )
     
@@ -28,7 +28,7 @@ def dels(name, ip):
         title="Server deleted", 
         description=f"Server as bin deleted\n\n"
                     f"**NAME**: {name}\n"
-                    f"**IP**: {ip}\n)",
+                    f"**IP**: {ip}\n",
         colour=disnake.Color.dark_red()
         )
     
