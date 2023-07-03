@@ -142,7 +142,10 @@ async def update_servers_status():
 
         embed.add_field(
             name="legend",
-            value=f"If is {statues.on} the server is online!\nIf is {statues.idle} the server has bugs.\nIf is {statues.off} the server is offline.\nIf is {statues.not_h} the server is not installed.",
+            value=f"If is {statues.on} the server is online!\n"
+                  f"If is {statues.idle} the server has bugs.\n"
+                  f"If is {statues.off} the server is offline.\n"
+                  f"If is {statues.not_h} the server is not installed.",
             inline=False
         )
 
