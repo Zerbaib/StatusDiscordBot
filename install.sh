@@ -1,8 +1,8 @@
 #bin/bash
 
-sudo apt install python3
-sudo apt install python3-pip
-sudo apt install python-is-python3
+sudo apt install python3 -y
+sudo apt install python3-pip -y
+sudo apt install python-is-python3 -y
 
 pip install disnake
 
