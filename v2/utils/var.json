@@ -1,0 +1,6 @@
+{
+    "CONFIG_FILE": "config.json",
+    "SERVER_FILE": "data/servers.json",
+    "ONLINE_VER": "https://raw.githubusercontent.com/Zerbaib/StatusDiscordBot/main/version.txt",
+    "LOCAL_VER": "version"
+}

@@ -2,3 +2,4 @@
 utils/statues.py
 config.json
 servers.json
+.venv/*

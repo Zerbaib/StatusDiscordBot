@@ -258,28 +258,6 @@ async def add_server(ctx: disnake.ApplicationCommandInteraction, name: str, ip: 
     await ctx.send("done", delete_after=del_time)
     save_servers(servers)
 
-@bot.slash_command(
-    name="del",
-    description="Remove a server from the database"
-)
-async def del_server(ctx: disnake.ApplicationCommandInteraction, name: str):
-    if ctx.author.id != you:
-        await ctx.send("You are not authorized to execute this command.")
-        return
 
-    with open('servers.json', 'r') as servers_file:
-        servers = json.load(servers_file)
-
-    server = next((s for s in servers if s['name'].lower() == name.lower()), None)
-    ip = server["ip"]
-    if server:
-        servers.remove(server)
-        save_servers(servers)
-        embed = msg.dels(name, ip)
-        await ctx.author.send(embed=embed)
-    else:
-        await ctx.author.send(f"Server {name} not found.")
-    
-    await ctx.send("done", delete_after=del_time)
 
 bot.run(token)
