@@ -2,6 +2,7 @@ import disnake
 from disnake.ext import commands
 from utils import alerts, statues, msg, errors
 import asyncio
+import aioping
 import subprocess
 import json
 import os
@@ -67,21 +68,10 @@ async def ping_server(ip):
         return 'Not Here', 'N/A'
 
     try:
-        result = await asyncio.create_subprocess_shell(
-            f'ping -c 1 {ip}', stdout=subprocess.PIPE, stderr=subprocess.PIPE
-        )
-        output, _ = await result.communicate()
-        output = output.decode('utf-8')
-        if result.returncode == 0:
-            start_index = output.find('time=')
-            if start_index != -1:
-                end_index = output.find(' ms', start_index)
-                if end_index != -1:
-                    ping_time = output[start_index + 5:end_index]
-                    return 'Online', f'{ping_time} ms'
-            return 'Online', 'N/A'
-        else:
-            return 'Offline', 'N/A'
+        response_time = await aioping.ping(ip)
+        return 'Online', f'{response_time * 1000:.2f} ms'
+    except TimeoutError:
+        return 'Offline', 'N/A'
     except Exception:
         errors.two01()
         return 'Erreur lors du ping', 'N/A'
