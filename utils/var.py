@@ -1,5 +1,7 @@
-import disnake
+from disnake import Color
 
+database_path = 'data.db'
+config_file_path = 'config.json'
 config_data = {
     "TOKEN": "your_bot_token",
     "CHAN_ID": None,
@@ -20,17 +22,17 @@ error_title = "A error as poped !"
 error_body = "The exception is\n\n"
 
 # Variables of colors
-red = disnake.Color.red()
-brand_red = disnake.Color.brand_red()
-dark_red = disnake.Color.dark_red()
+red = Color.red()
+brand_red = Color.brand_red()
+dark_red = Color.dark_red()
 
-green = disnake.Color.green()
-brand_green = disnake.Color.brand_green()
-dark_green = disnake.Color.dark_green()
+green = Color.green()
+brand_green = Color.brand_green()
+dark_green = Color.dark_green()
 
-orange = disnake.Color.orange()
-brand_orange = disnake.Color.brand_orange()
-dark_orange = disnake.Color.dark_orange()
+orange = Color.orange()
+brand_orange = Color.brand_orange()
+dark_orange = Color.dark_orange()
 
-blurple = disnake.Color.blurple()
-random_color = disnake.Color.random()
+blurple = Color.blurple()
+random_color = Color.random()
