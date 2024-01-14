@@ -1,4 +1,4 @@
-import disnake
+from utils.var import *
 
 def maitenance(servers, option, status):
     emd = disnake.Embed(
@@ -7,9 +7,8 @@ def maitenance(servers, option, status):
                     f"**NAME**: {servers}\n"
                     f"**OPTION**: {option}\n"
                     f"**STATUS**: {status}",
-        colour=disnake.Color.orange()
+        colour=dark_orange
         )
-
     return emd
 
 def adds(name, ip):
@@ -18,9 +17,8 @@ def adds(name, ip):
         description=f"Server as bin added:\n\n"
                     f"**NAME**: {name}\n"
                     f"**IP**: {ip}\n",
-        colour=disnake.Color.dark_green()
+        colour=dark_green
         )
-    
     return emd
 
 def dels(name, ip):
@@ -29,7 +27,6 @@ def dels(name, ip):
         description=f"Server as bin deleted\n\n"
                     f"**NAME**: {name}\n"
                     f"**IP**: {ip}\n",
-        colour=disnake.Color.dark_red()
+        colour=dark_red
         )
-    
     return emd
