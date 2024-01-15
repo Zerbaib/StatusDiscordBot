@@ -1,6 +1,7 @@
 from utils.var import *
 from utils.sql import create_database
 from utils.alerts import *
+from utils.json import get_data
 from utils.updateServerCount import update_server_count
 from disnake import Intents, NotFound, Embed
 from disnake.ext import commands
@@ -16,8 +17,7 @@ if not path.exists(config_file_path):
     with open(config_file_path, 'w') as config_file:
         dump(config_data, config_file, indent=4)
 
-with open(config_file_path, 'r') as config_file:
-    config = load(config_file)
+config = get_data(config_file_path)
 
 token = config["TOKEN"]
 chan = config["CHAN_ID"]
