@@ -1,3 +1,14 @@
-disnake
-aioping
-sqlite3
+aiodns==3.1.1
+aiohttp==3.9.1
+aioping==0.4.0
+aiosignal==1.3.1
+async-timeout==4.0.3
+attrs==23.2.0
+cffi==1.16.0
+disnake==2.9.1
+frozenlist==1.4.1
+idna==3.6
+multidict==6.0.4
+pycares==4.4.0
+pycparser==2.21
+yarl==1.9.4

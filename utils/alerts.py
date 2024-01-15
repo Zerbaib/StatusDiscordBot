@@ -1,7 +1,8 @@
 from utils.var import *
+from disnake import Embed
 
 def up(name):
-    embed = disnake.Embed(
+    embed = Embed(
         title=f"END OF WARNING",
         description=f"**The server ``{name}``**\nWas **ONLINE** !",
         color=brand_green
@@ -9,15 +10,15 @@ def up(name):
     return embed
 
 def pending(name):
-    embed = disnake.Embed(
+    embed = Embed(
         title=f"PENDING",
         description=f"**The server ``{name}``**\nIs **PENDING** !",
-        color=brand_orange
+        color=dark_orange
     )
     return embed
 
 def down(name):
-    embed = disnake.Embed(
+    embed = Embed(
         title=f"WARNING",
         description=f"**The server ``{name}``**\nWas **OFFLINE** !",
         color=brand_red

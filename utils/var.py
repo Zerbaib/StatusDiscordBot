@@ -31,7 +31,6 @@ brand_green = Color.brand_green()
 dark_green = Color.dark_green()
 
 orange = Color.orange()
-brand_orange = Color.brand_orange()
 dark_orange = Color.dark_orange()
 
 blurple = Color.blurple()

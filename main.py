@@ -1,9 +1,11 @@
 from utils.var import *
 from utils.sql import create_database
+from utils.alerts import *
 from utils.updateServerCount import update_server_count
-from disnake import Intents
+from disnake import Intents, NotFound, Embed
 from disnake.ext import commands
 from asyncio import sleep
+import aioping
 from json import load, dump
 from os import path
 
@@ -13,9 +15,9 @@ if not path.exists(database_path):
 if not path.exists(config_file_path):
     with open(config_file_path, 'w') as config_file:
         dump(config_data, config_file, indent=4)
-else:
-    with open(config_file_path, 'r') as config_file:
-        config = load(config_file)
+
+with open(config_file_path, 'r') as config_file:
+    config = load(config_file)
 
 token = config["TOKEN"]
 chan = config["CHAN_ID"]
@@ -27,10 +29,7 @@ bot = commands.Bot(command_prefix='!', intents=Intents.all())
 
 @bot.event
 async def on_ready():
-    print("done")
-    await update_server_count(bot, sec_loop)
     print(f'Logged in as {bot.user.name}')
-
 
 async def update_servers_status():
     await bot.wait_until_ready()
@@ -42,17 +41,16 @@ async def update_servers_status():
     if msg_id:
         try:
             embed_message = await server_channel.fetch_message(msg_id)
-        except disnake.NotFound:
-            errors.tree01()
+        except NotFound:
             pass
 
     while not bot.is_closed():
         with open('servers.json', 'r') as servers_file:
-            servers = json.load(servers_file)
+            servers = load(servers_file)
 
-        embed = disnake.Embed(
+        embed = Embed(
             title='Status of servers',
-            colour=disnake.Color.old_blurple())
+            colour=blurple)
         for server in servers:
             stats = ''
             name = server['name']
@@ -61,26 +59,26 @@ async def update_servers_status():
             not_installed = server.get('not_installed')
 
             if maintenance:
-                status = statues.idle
+                status = idle
                 ping_result = 'N/A'
             elif not_installed:
-                status = statues.not_h
+                status = not_h
                 ping_result = 'N/A'
             else:
                 status, ping_result = await ping_server(ip)
                 if status == "Online":
                     stats = "Online"
-                    status = statues.on
+                    status = on
                 else:
                     stats = "Offline"
-                    status = statues.off
+                    status = off
                 
             if stats == 'Offline' and server['alert'] == False:
-                alert_s = alerts.shutdown(name)
+                alert_s = down(name)
                 await user.send(embed=alert_s)
                 server['alert'] = True
             if stats == 'Online' and server['alert'] == True:
-                alert_b = alerts.boot(name)
+                alert_b = up(name)
                 await user.send(embed=alert_b)
                 server['alert'] = False
 
@@ -92,10 +90,10 @@ async def update_servers_status():
 
         embed.add_field(
             name="legend",
-            value=f"If is {statues.on} the server is online!\n"
-                  f"If is {statues.idle} the server has bugs.\n"
-                  f"If is {statues.off} the server is offline.\n"
-                  f"If is {statues.not_h} the server is not installed.",
+            value=f"If is {on} the server is online!\n"
+                  f"If is {idle} the server has bugs.\n"
+                  f"If is {off} the server has problem.\n"
+                  f"If is {not_h} the server is offline.",
             inline=False
         )
 
@@ -104,14 +102,10 @@ async def update_servers_status():
         else:
             embed_message = await server_channel.send(embed=embed)
             msg_id = embed_message.id
-            errors.tree02()
 
             # Sauvegarder l'ID du message dans le fichier de configuration
             config["MSG_ID"] = msg_id
             with open(config_file_path, 'w') as config_file:
-                json.dump(config, config_file, indent=4)
-            errors.tree03()
+                dump(config, config_file, indent=4)
 
-        save_servers(servers)  # Save server configuration
-
-        await asyncio.sleep(sec_loop)
+        await sleep(sec_loop)

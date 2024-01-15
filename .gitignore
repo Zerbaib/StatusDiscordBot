@@ -1,4 +1,20 @@
-*.pyc
+# Data files
+*.db
+
+# Config files
 config.json
-servers.json
+
+# Environment files
+.env
+.env/*
+env/*
 .venv/*
+venv/*
+
+# IDEs and editors
+.idea/*
+.vscode/*
+.vs/*
+
+# Tempfiles
+*.pyc
