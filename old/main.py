@@ -64,8 +64,6 @@ async def update_server_count():
 
         await asyncio.sleep(sec_loop)  # Attendre un certain intervalle avant la prochaine mise à jour
 
-
-
 async def update_servers_status():
     await bot.wait_until_ready()
     user = await bot.fetch_user(you)
