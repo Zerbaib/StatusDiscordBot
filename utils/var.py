@@ -2,6 +2,7 @@ from disnake import Color
 
 database_path = 'data.db'
 config_file_path = 'config.json'
+cogs_dir = 'cogs'
 config_data = {
     "TOKEN": "your_bot_token",
     "CHAN_ID": None,
